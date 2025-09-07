@@ -1,45 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cadastro de Restaurantes</title>
-</head>
+  </head>
 
-<body>
-    <form action="/resultado" method="get">
-        <h1>Digite os dados do restaurante</h1>
-        <table name="tabela">
-            <tr>
-                <td>
-                    <label>Nome</label>
-                    <input type="text" name="nome" placeholder="Digite seu nome">
-                </td>
-                <td>
-                    <label>Endereoço</label>
-                    <input type="text" name="end" placeholder="Digite seu endereço">
-                    <br>
-                </td>
-                <td>
-                    <label>Telefone</label>
-                    <input type="number" name="telefone" placeholder="Digite seu telefone">
-                    <br>
-                </td>
-                <td>
-                    <label>E-mail</label>
-                    <input type="text" name="email" placeholder="Digite seu email">
-                    <br>
-                </td>
-                <td>
-                    <label>Descrição</label>
-                    <input type="text" name="descricao" placeholder="Adicione uma descrição ao restaurante"
-                        maxlength="200">
-                </td>
-                <button type="submit">Enviar dados</button>
-            </tr>
-        </table>
+  <body>
+    <form action="/cadastroRestaurantes" method="post">
+      <h1>Digite os dados do restaurante</h1>
+      <table name="tabela">
+        <tr>
+          <td>
+            <label>Nome</label>
+            <input type="text" name="name" placeholder="Digite seu nome" />
+          </td>
+          <td>
+            <label>Endereço</label>
+            <input
+              type="text"
+              name="endereco"
+              placeholder="Digite seu endereço"
+            />
+            <br />
+          </td>
+          <td>
+            <label>Telefone</label>
+            <input
+              type="number"
+              name="telefone"
+              placeholder="Digite seu telefone"
+            />
+            <br />
+          </td>
+          <td>
+            <label>E-mail</label>
+            <input type="text" name="email" placeholder="Digite seu email" />
+            <br />
+          </td>
+          <td>
+            <label>Descrição</label>
+            <input
+              type="text"
+              name="descricao"
+              placeholder="Adicione uma descrição ao restaurante"
+              maxlength="200"
+            />
+          </td>
+        </tr>
+        <tr>
+          <td colspan="5" style="text-align: center">
+            <button type="submit">Enviar dados</button>
+          </td>
+        </tr>
+      </table>
     </form>
-</body>
-
+  </body>
 </html>
