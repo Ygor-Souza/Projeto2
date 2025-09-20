@@ -12,38 +12,76 @@
       <table name="tabela">
         <tr>
           <td>
-            <label>Nome</label>
-            <input type="text" name="name" placeholder="Digite seu nome" />
+            <label>Nome do Restaurante</label>
+            <input
+              type="text"
+              name="nome"
+              placeholder="Digite o nome do restaurante"
+              minlength="1"
+              maxlength="150"
+              required
+            />
           </td>
+        </tr>
+        <tr>
           <td>
             <label>Endereço</label>
             <input
               type="text"
               name="endereco"
               placeholder="Digite seu endereço"
+              minlength="1"
+              maxlength="200"
+              required
             />
-            <br />
           </td>
+        </tr>
+        <tr>
           <td>
             <label>Telefone</label>
             <input
               type="number"
               name="telefone"
               placeholder="Digite seu telefone"
+              minlength="8"
+              maxlength="15"
+              required
             />
-            <br />
           </td>
+        </tr>
+        <tr>
           <td>
             <label>E-mail</label>
-            <input type="text" name="email" placeholder="Digite seu email" />
-            <br />
+            <input
+              type="text"
+              name="email"
+              placeholder="Digite seu email"
+              minlength="1"
+              maxlength="200"
+              required
+            />
           </td>
+        </tr>
+        <tr>
           <td>
             <label>Descrição</label>
             <input
               type="text"
               name="descricao"
               placeholder="Adicione uma descrição ao restaurante"
+              minlength="1"
+              maxlength="200"
+              required
+            />
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <label>Site (Opcional)</label>
+            <input
+              type="text"
+              name="site"
+              placeholder="Adicione um site ao restaurante"
               maxlength="200"
             />
           </td>

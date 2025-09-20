@@ -9,20 +9,20 @@ const pool = new Pool({
   user: "postgres",
   host: "localhost",
   port: 5432,
-  database: "formulario",
+  database: "Restaurantes",
   password: "postgres",
 });
 
-//rotas:
-
+//npm install body-parser --save
 app.use(
   bodyParser.urlencoded({
     extended: false,
   })
 );
+//rotas:
 
 app.get("/", function (req, res) {
-  res.redirect("/cadastroRestaurantes");
+  res.redirect("/resultado");
 });
 
 app.get("/cadastroRestaurantes", function (req, res) {
@@ -30,11 +30,11 @@ app.get("/cadastroRestaurantes", function (req, res) {
 });
 
 app.post("/cadastroRestaurantes", function (req, res) {
-  const { name, endereco, telefone, email, descricao } = req.body;
+  const { nome, endereco, telefone, email, descricao, site } = req.body;
 
   pool.query(
-    "INSERT INTO store.restaurante (name, endereco, telefone, email, descricao) VALUES ($1, $2, $3, $4, $5)",
-    [name, endereco, telefone, email, descricao],
+    "INSERT INTO restaurante (nome, endereco, telefone, email, descricao, site) VALUES ($1, $2, $3, $4, $5, $6)",
+    [nome, endereco, telefone, email, descricao, site],
     (error, result) => {
       if (error) {
         res.status(500).send("Erro ao inserir dados: " + error);
@@ -48,7 +48,7 @@ app.post("/cadastroRestaurantes", function (req, res) {
 const restaurantes = [];
 
 app.get("/resultado", function (req, res) {
-  pool.query("SELECT * FROM store.restaurante", (error, result) => {
+  pool.query("SELECT * FROM restaurante ORDER BY nome ASC", (error, result) => {
     if (error) {
       res.status(500).send(error);
     } else {
@@ -72,6 +72,7 @@ app.get("/resultado", function (req, res) {
                 <th>Telefone</th>
                 <th>Email</th>
                 <th>Descrição</th>
+                <th>Site</th>
             </tr>
         `;
 
@@ -79,17 +80,52 @@ app.get("/resultado", function (req, res) {
         html += `
                 <tr>
                 <th>${restaurantes.id}</th>
-                <th>${restaurantes.name}</th>
+                <th>${restaurantes.nome}</th>
                 <th>${restaurantes.endereco}</th>
                 <th>${restaurantes.telefone}</th>
                 <th>${restaurantes.email}</th>
                 <th>${restaurantes.descricao}</th>
+                <th>${restaurantes.site}</th>
                 </tr>
                 `;
       });
 
       html += `
-        </table>
+                  </table>
+                  <li><a href="/cadastroRestaurantes">Cadastrar Restaurante</a></li>
+
+                  <form id="formConsulta1">
+                      <label for="id1">Consultar Restaurante por ID</label>
+                      <input type="number" id="id1" name="id2" required />
+                      <button type="submit">Consultar</button>
+                  </form>
+
+                  <script>
+                    document.getElementById("formConsulta1").addEventListener("submit", function (e) {
+                        e.preventDefault();
+                        const id1 = document.getElementById("id1").value;
+                        window.location.href = "/consultar-restaurante/" + id1;
+                      });
+                  </script>
+
+
+                  <form id="formConsulta2" method="post">
+                      <label for="id2">Excluir Restaurante por ID</label>
+                      <input type="number" id="id2" name="id2" required />
+                      <button type="submit">Excluir</button>
+                  </form>
+
+                  <script>
+                    document.getElementById("formConsulta2").addEventListener("submit", function (e) {
+                        e.preventDefault();
+                        const id2 = document.getElementById("id2").value.trim();
+
+                        if(!id2){
+                          alert("Por favor, insira um ID válido.");
+                        }
+                        window.location.href = "/excluir-restaurante/" + id2;
+                      });
+                  </script>
         </body>
         </html>
         `;
@@ -98,6 +134,65 @@ app.get("/resultado", function (req, res) {
       //res.status(200).json(result.rows);
     }
   });
+});
+
+app.get("/consultar-restaurante/:id", async function (req, res) {
+  const id = parseInt(req.params.id);
+
+  try {
+    const client = await pool.connect();
+    const result = await client.query(
+      "SELECT id, nome, endereco, telefone, email, descricao, site FROM restaurante WHERE id = $1",
+      [id]
+    );
+
+    const restaurante = result.rows;
+
+    if (restaurante.length === 0) {
+      res.status(404).send("Resgistro não encontrado");
+    } else {
+      const registro = restaurante[0];
+
+      res.send(`
+        <h1>Dados do Registro</h1>
+        <p><b>ID:</b>${registro.id}</p>  
+        <p><b>Nome do restaurante:</b>${registro.nome}</p>  
+        <p><b>Endereço:</b>${registro.endereco}</p>  
+        <p><b>Telefone:</b>${registro.telefone}</p>
+        <p><b>Email:</b>${registro.email}</p>
+        <p><b>Descrição:</b>${registro.descricao}</p>
+        <p><b>Site:</b>${registro.site}</p>
+
+        <li><a href="/resultado">Voltar</a></li>
+
+
+        `);
+    }
+  } catch (error) {
+    console.error("Erro ao executar a consulta: ", error);
+    res.status(500).send("Erro ao consultar registro");
+  }
+});
+
+app.get("/excluir-restaurante/:id", async function (req, res) {
+  const id = parseInt(req.params.id);
+
+  try {
+    const result = await pool.query("DELETE FROM restaurante WHERE id = $1", [
+      id,
+    ]);
+
+    if (result.rowCount === 0) {
+      res.status(404).send("Registro não encontrado");
+    } else {
+      res.send(`Restaurante excluído com sucesso!
+         <li><a href="/resultado">Voltar</a></li>
+      `);
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Erro ao excluir o restaurante");
+  }
 });
 
 app.listen(porta, ipDoServidor, function () {
